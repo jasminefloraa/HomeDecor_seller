@@ -1,4 +1,6 @@
+
 import os, ssl, json, time, threading, smtplib, requests
+from gmail_api import send_email
 from email.message import EmailMessage
 from flask import Flask, jsonify, request
 from dotenv import load_dotenv
@@ -141,30 +143,58 @@ def email_for():
 @app.post("/api/send")
 def send():
     d = request.get_json(force=True)
-    if not (SMTP_USER and SMTP_PASS):
-        return jsonify(ok=False, error="Mail is not set up in .env"), 400
-    name = d.get("from_name") or SENDER_NAME
-    m = EmailMessage()
-    m["From"] = f"{name} <{SMTP_USER}>"
-    m["To"] = d["to"]
-    m["Subject"] = d["subject"]
-    m["Reply-To"] = d.get("reply_to") or SMTP_USER
-    m["List-Unsubscribe"] = f"<mailto:{SMTP_USER}?subject=unsubscribe>"
-    m.set_content(f"{d['body']}\n\n--\n{name}\n{POSTAL}\n"
-                  f"Not interested? Reply \"unsubscribe\" and I won't write again.")
+
+    sender_email = os.getenv("GMAIL_SENDER_EMAIL", "").strip()
+    sender_name = d.get("from_name") or SENDER_NAME
+
+    if not sender_email:
+        return jsonify(
+            ok=False,
+            error="Gmail sender email is not configured."
+        ), 400
+
     try:
-        if SMTP_PORT == 465:
-            with smtplib.SMTP_SSL(SMTP_HOST, 465, context=ssl.create_default_context(), timeout=25) as s:
-                s.login(SMTP_USER, SMTP_PASS); s.send_message(m)
-        else:
-            with smtplib.SMTP(SMTP_HOST, SMTP_PORT, timeout=25) as s:
-                s.starttls(); s.login(SMTP_USER, SMTP_PASS); s.send_message(m)
-        log("sends", {"to": d["to"], "business": d.get("business", ""), "ok": True})
-        return jsonify(ok=True)
+        body = (
+            f"{d['body']}\n\n"
+            f"--\n"
+            f"{sender_name}\n"
+            f"Not interested? Reply \"unsubscribe\" and I won't write again."
+        )
+
+        result = send_email(
+            to=d["to"],
+            subject=d["subject"],
+            body=body,
+            sender_name=sender_name,
+            sender_email=sender_email,
+            reply_to=d.get("reply_to") or sender_email
+        )
+
+        log("sends", {
+            "to": d["to"],
+            "business": d.get("business", ""),
+            "ok": True,
+            "message_id": result.get("id")
+        })
+
+        return jsonify(
+            ok=True,
+            message_id=result.get("id")
+        )
+
     except Exception as e:
-        log("sends", {"to": d["to"], "business": d.get("business", ""), "ok": False, "error": str(e)[:120]})
-        return jsonify(ok=False, error=str(e)), 502
+        log("sends", {
+            "to": d["to"],
+            "business": d.get("business", ""),
+            "ok": False,
+            "error": str(e)[:120]
+        })
+
+        return jsonify(
+            ok=False,
+            error=str(e)
+        ), 502
 
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(debug=True, host="127.0.0.1", port=5050)
