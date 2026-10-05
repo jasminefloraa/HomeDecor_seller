@@ -1,0 +1,361 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Stockist - find buyers for home decor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#150a20;--plum:#241036;--plum2:#34194d;--line:rgba(239,230,247,.13);--text:#efe6f7;--mute:#a994bd;--gold:#f3b53f;--rose:#e07aa8;--ok:#7fdca4;--bad:#ff8b8b}
+*{box-sizing:border-box;margin:0}
+html{scroll-behavior:smooth}
+body{font:16px/1.55 Figtree,system-ui,sans-serif;color:var(--text);background:var(--ink);min-height:100vh;overflow-x:hidden}
+h1,h2,h3{font-family:Fraunces,Georgia,serif;font-weight:600;letter-spacing:-.01em}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+/* backdrop */
+.bg{position:fixed;inset:0;z-index:0;overflow:hidden;pointer-events:none;background:radial-gradient(1200px 700px at 80% -10%,#3b1b57 0%,transparent 60%),radial-gradient(900px 600px at -10% 110%,#2a1245 0%,transparent 60%),var(--ink)}
+.orb{position:absolute;border-radius:50%;filter:blur(70px);opacity:.5;animation:drift 18s ease-in-out infinite alternate}
+.o1{width:380px;height:380px;background:#8a3fb8;top:8%;left:62%}
+.o2{width:300px;height:300px;background:#e07aa8;opacity:.28;bottom:6%;left:8%;animation-duration:24s}
+.o3{width:220px;height:220px;background:#f3b53f;opacity:.2;top:55%;left:70%;animation-duration:21s}
+@keyframes drift{to{transform:translate(-50px,40px) scale(1.12)}}
+.fl{position:absolute;transition:transform .25s ease-out}
+.fl svg{display:block;animation:bob 7s ease-in-out infinite;filter:drop-shadow(0 18px 24px rgba(0,0,0,.45))}
+.f1{top:14%;right:5%;width:150px}.f2{bottom:9%;right:12%;width:90px}.f3{top:58%;left:2.5%;width:70px}.f4{top:9%;left:42%;width:60px;opacity:.7}
+.f2 svg{animation-delay:-2s}.f3 svg{animation-delay:-4s}.f4 svg{animation-delay:-1s}
+@keyframes bob{50%{transform:translateY(-16px) rotate(2deg)}}
+/* shell */
+.shell{position:relative;z-index:1;max-width:1120px;margin:0 auto;padding:24px 22px 90px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font:700 24px Fraunces,serif}
+.brand i{width:30px;height:34px;border-radius:15px 15px 3px 3px;background:linear-gradient(160deg,var(--gold),var(--rose));display:block}
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-size:13px;padding:5px 12px;border-radius:99px;border:1px solid var(--line);background:rgba(255,255,255,.04);color:var(--mute);display:flex;align-items:center;gap:7px}
+.chip b{width:8px;height:8px;border-radius:50%;background:#6b5a7c}
+.chip.on{color:var(--text)}.chip.on b{background:var(--ok);box-shadow:0 0 10px var(--ok)}
+.hero{padding:54px 0 26px;max-width:640px}
+.hero h1{font-size:clamp(34px,5.4vw,58px);line-height:1.05}
+.hero p{margin-top:14px;color:var(--mute);font-size:18px;max-width:52ch}
+.steps{display:flex;gap:8px;margin:26px 0 22px;flex-wrap:wrap}
+.st{border:1px solid var(--line);background:rgba(255,255,255,.04);padding:9px 18px;border-radius:99px;cursor:pointer;color:var(--mute);transition:.2s;backdrop-filter:blur(8px)}
+.st:hover{color:var(--text);transform:translateY(-2px)}
+.st.on{background:var(--gold);color:#2a1700;border-color:var(--gold);font-weight:600}
+.st.done::before{content:"\2713  "}
+/* cards */
+.card{background:linear-gradient(160deg,rgba(255,255,255,.09),rgba(255,255,255,.03));border:1px solid var(--line);border-radius:22px;padding:26px;backdrop-filter:blur(16px);box-shadow:0 30px 60px -30px rgba(0,0,0,.6);transition:transform .15s ease-out;transform-style:preserve-3d}
+.grid{display:grid;grid-template-columns:1.2fr 1fr;gap:20px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}.fl{display:none}}
+label{display:block;font-size:14px;color:var(--mute);margin:14px 0 6px}
+input,select,textarea{width:100%;background:rgba(10,4,18,.55);border:1px solid var(--line);border-radius:12px;padding:12px 14px;transition:.2s}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(243,181,63,.15);outline:0}
+textarea{min-height:190px;resize:vertical}
+.row{display:grid;grid-template-columns:1fr 150px;gap:12px}
+.types{display:flex;flex-wrap:wrap;gap:9px;margin-top:6px}
+.t{border:1px solid var(--line);padding:9px 15px;border-radius:14px;cursor:pointer;background:rgba(255,255,255,.04);transition:.2s;user-select:none}
+.t:hover{transform:translateY(-3px) rotate(-1deg)}
+.t.on{background:rgba(243,181,63,.16);border-color:var(--gold);color:#ffe2a3}
+.btn{border:0;cursor:pointer;background:linear-gradient(135deg,var(--gold),#ffcf72);color:#2a1700;font-weight:600;padding:13px 24px;border-radius:14px;transition:.2s;box-shadow:0 12px 30px -10px rgba(243,181,63,.6)}
+.btn:hover{transform:translateY(-3px);box-shadow:0 18px 34px -10px rgba(243,181,63,.7)}
+.btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.btn.ghost{background:rgba(255,255,255,.07);color:var(--text);box-shadow:none;border:1px solid var(--line)}
+.tip{color:var(--mute);font-size:14px;margin-top:12px}
+.side h3{font-size:21px;margin-bottom:10px}
+.side li{margin:0 0 10px 18px;color:var(--mute)}
+.side li b{color:var(--text);font-weight:600}
+.err{color:var(--bad);margin-top:12px}
+/* buyers */
+.stats{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px}
+.stat{padding:12px 18px;border-radius:16px;border:1px solid var(--line);background:rgba(255,255,255,.04);min-width:120px}
+.stat b{display:block;font:600 28px Fraunces,serif}
+.stat span{font-size:13px;color:var(--mute)}
+.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.bar input{max-width:260px}
+.tablewrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:640px}
+th{text-align:left;font-weight:500;color:var(--mute);font-size:14px;padding:8px 10px;border-bottom:1px solid var(--line)}
+td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr.r{transition:.2s}tr.r:hover{background:rgba(255,255,255,.05)}
+td small{display:block;color:var(--mute)}
+input[type=checkbox]{width:18px;height:18px;accent-color:var(--gold);padding:0}
+.em{font-size:14px}.em.none{color:var(--mute)}
+.spin{display:inline-block;width:13px;height:13px;border:2px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite;vertical-align:-2px;margin-right:6px}
+@keyframes sp{to{transform:rotate(360deg)}}
+.src{font-size:12px;color:var(--rose);margin-left:6px}
+.sticky{position:sticky;bottom:16px;display:flex;justify-content:space-between;align-items:center;margin-top:18px;padding:14px 18px;border-radius:18px;background:rgba(36,16,54,.92);border:1px solid var(--line);backdrop-filter:blur(14px)}
+/* message */
+.tags{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}.tags button{font-size:13px;padding:5px 11px;border-radius:99px;border:1px dashed var(--gold);background:0;color:#ffe2a3;cursor:pointer}
+.mail{background:#fbf7ff;color:#241036;border-radius:14px;padding:18px 20px;min-height:300px;box-shadow:0 24px 50px -24px #000}
+.mail .h{border-bottom:1px solid #e5d9ef;padding-bottom:10px;margin-bottom:12px;font-size:14px;color:#6e5a82}
+.mail .h b{color:#241036}
+.mail pre{font:inherit;white-space:pre-wrap;line-height:1.6}
+.mail .ft{margin-top:16px;color:#8a77a0;font-size:13px}
+.pager{display:flex;justify-content:space-between;align-items:center;margin-top:12px;color:var(--mute);font-size:14px}
+.pager button{width:38px;height:38px;border-radius:50%;border:1px solid var(--line);background:rgba(255,255,255,.06);cursor:pointer}
+/* send */
+.prog{height:10px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden;margin:14px 0 20px}
+.prog i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--rose),var(--gold));transition:width .4s}
+.log{display:grid;gap:8px;max-height:380px;overflow:auto}
+.lg{display:flex;justify-content:space-between;gap:12px;padding:11px 14px;border-radius:12px;background:rgba(255,255,255,.05);animation:pop .35s}
+@keyframes pop{from{transform:scale(.96);opacity:0}}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+dialog{border:1px solid var(--line);border-radius:22px;background:var(--plum);color:var(--text);padding:28px;max-width:440px;width:92%;margin:auto;box-shadow:0 40px 80px #000}
+dialog::backdrop{background:rgba(10,4,18,.7);backdrop-filter:blur(5px)}
+dialog p{color:var(--mute);margin:10px 0 20px}dialog .acts{display:flex;gap:10px;justify-content:flex-end}
+.chart{display:flex;align-items:flex-end;gap:10px;height:190px;margin-top:20px}
+.col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}
+.col i{width:100%;background:linear-gradient(var(--gold),var(--rose));border-radius:8px 8px 3px 3px;min-height:3px;transition:height .7s}
+.col span,.col em{font-size:12px;color:var(--mute);font-style:normal}
+.dh{margin:34px 0 18px;font-size:clamp(28px,4vw,40px)}
+.empty{color:var(--mute);padding:12px 0}
+.hide{display:none}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<div class="bg" aria-hidden="true">
+  <div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+  <div class="fl f1" data-d="30"><svg viewBox="0 0 150 200"><path d="M15 195V75a60 60 0 0 1 120 0v120z" fill="#34194d" stroke="#f3b53f" stroke-width="2"/><path d="M40 195V80a35 35 0 0 1 70 0v115z" fill="#150a20"/><circle cx="75" cy="108" r="16" fill="#f3b53f" opacity=".9"/></svg></div>
+  <div class="fl f2" data-d="55"><svg viewBox="0 0 90 130"><path d="M32 6h26v22c18 10 28 32 28 52 0 28-17 46-41 46S4 108 4 80c0-20 10-42 28-52z" fill="#e07aa8"/><path d="M45 6V-14M45 6c-12-8-14-18-10-24M45 6c12-8 14-18 10-24" stroke="#7fdca4" stroke-width="3" fill="none" stroke-linecap="round"/></svg></div>
+  <div class="fl f3" data-d="40"><svg viewBox="0 0 70 120"><rect x="16" y="50" width="38" height="66" rx="6" fill="#f4ead8"/><path d="M35 46c-9-10-6-20 0-28 6 8 9 18 0 28z" fill="#f3b53f"/></svg></div>
+  <div class="fl f4" data-d="20"><svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="26" fill="none" stroke="#f3b53f" stroke-width="2" stroke-dasharray="4 6"/></svg></div>
+</div>
+
+<div class="shell">
+<header>
+  <div class="brand"><i></i>Stockist</div>
+  <div class="chips" id="chips"></div>
+</header>
+
+<div class="hero">
+  <h1>Find the shops that will stock your home decor.</h1>
+  <p>Search real US stores, pull their public contact emails, and send each one a personal note. Nothing is uploaded or pre-filled.</p>
+</div>
+
+<nav class="steps" id="steps"></nav>
+
+<!-- 1 search -->
+<section id="s0" class="hide">
+  <div class="grid">
+    <div class="card" data-tilt>
+      <h2>Where should we look?</h2>
+      <div class="row">
+        <div><label for="city">City</label><input id="city" placeholder="Austin" autocomplete="off"></div>
+        <div><label for="state">State</label><input id="state" list="sl" placeholder="TX" maxlength="2"></div>
+      </div>
+      <datalist id="sl"></datalist>
+      <label>Shop types</label>
+      <div class="types" id="types"></div>
+      <p class="tip" id="typetip"></p>
+      <div style="margin-top:22px"><button class="btn" id="go">Find shops</button></div>
+      <p class="err" id="err"></p>
+    </div>
+    <div class="card side" data-tilt>
+      <h3>How it works</h3>
+      <ul>
+        <li><b>Shops</b> come from a live map search, never a file.</li>
+        <li><b>Emails</b> are read from each shop's own contact pages, with Hunter as backup.</li>
+        <li><b>Messages</b> go out one by one from your own mailbox, with an unsubscribe line.</li>
+      </ul>
+      <p class="tip">Start with 5 to 10 shops while testing so your mailbox stays in good standing.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2 buyers -->
+<section id="s1" class="hide">
+  <div class="card" data-tilt>
+    <div class="stats">
+      <div class="stat"><b id="n1">0</b><span>shops found</span></div>
+      <div class="stat"><b id="n2">0</b><span>with an email</span></div>
+      <div class="stat"><b id="n3">0</b><span>selected</span></div>
+      <div class="stat"><b id="n4">0</b><span>still checking</span></div>
+    </div>
+    <div class="bar">
+      <input id="q" placeholder="Filter by name">
+      <button class="btn ghost" id="onlyem">Show only shops with email</button>
+      <button class="btn ghost" id="selall">Select all with email</button>
+    </div>
+    <div class="tablewrap"><table><thead><tr><th></th><th>Shop</th><th>Location</th><th>Email</th></tr></thead><tbody id="rows"></tbody></table></div>
+    <div class="sticky"><span id="selinfo" class="tip" style="margin:0">Pick the shops you want to write to.</span><button class="btn" id="tomsg" disabled>Write message</button></div>
+  </div>
+</section>
+
+<!-- 3 message -->
+<section id="s2" class="hide">
+  <div class="grid">
+    <div class="card" data-tilt>
+      <h2>Write your note</h2>
+      <label for="fname">Your name</label><input id="fname" placeholder="Priya from Lumen Home">
+      <label for="subj">Subject</label><input id="subj" value="Handmade decor for {{business}}">
+      <label for="body">Message</label><textarea id="body"></textarea>
+      <div class="tags"><button data-t="{{business}}">+ shop name</button><button data-t="{{city}}">+ city</button></div>
+      <div style="margin-top:20px"><button class="btn" id="tosend">Review and send</button></div>
+    </div>
+    <div>
+      <div class="mail" id="prev"></div>
+      <div class="pager"><button id="pp" aria-label="Previous shop">&lsaquo;</button><span id="pc"></span><button id="pn" aria-label="Next shop">&rsaquo;</button></div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 send -->
+<section id="s3" class="hide">
+  <div class="card">
+    <div class="stats">
+      <div class="stat"><b class="ok" id="sa">0</b><span>sent</span></div>
+      <div class="stat"><b class="bad" id="sb">0</b><span>failed</span></div>
+      <div class="stat"><b id="sc">0</b><span>waiting</span></div>
+    </div>
+    <div class="prog"><i id="pbar"></i></div>
+    <div class="log" id="log"></div>
+  </div>
+</section>
+<!-- dashboard -->
+<section id="s4">
+  <h1 class="dh">Campaign dashboard</h1>
+  <div class="stats" id="dstats"></div>
+  <div class="grid">
+    <div class="card" data-tilt><h2>Emails sent this week</h2><div class="chart" id="chart"></div></div>
+    <div class="card" data-tilt><h2>Recent searches</h2><div id="rs" style="margin-top:12px"></div>
+      <div style="margin-top:20px"><button class="btn" id="newc">Start a new search</button></div></div>
+  </div>
+  <div class="card" style="margin-top:20px"><h2>Recent emails</h2><div class="log" id="rl" style="margin-top:14px"></div></div>
+</section>
+</div>
+
+<dialog id="dlg">
+  <h3>Send to <span id="dn"></span> shops?</h3>
+  <p>Each shop gets its own personalised email from <b id="df"></b>, with your postal address and an unsubscribe line added. Only send to businesses.</p>
+  <div class="acts"><button class="btn ghost" id="dno">Go back</button><button class="btn" id="dyes">Send now</button></div>
+</dialog>
+
+<script>
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const STATES="AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC".split(" ");
+const TYPES=["Home decor store","Furniture store","Interior designer","Gift shop","Lighting store","Antique shop"];
+const NAMES=["Find shops","Pick buyers","Write","Send"];
+const DEFAULT_BODY=`Hi {{business}} team,
+
+I came across your shop in {{city}} and think our handmade home decor would suit your customers well: ceramics, woven pieces and candles, made in small batches.
+
+Could I send you a short wholesale catalogue? A one-line reply is all I need.
+
+Thank you for your time.`;
+let leads=[],sel=new Set(),types=new Set(["Home decor store","Furniture store"]),step=0,maxStep=0,onlyEm=false,idx=0,api={},source="";
+
+// chips + status
+fetch("/api/status").then(r=>r.json()).then(s=>{api=s;
+  $("#chips").innerHTML=[["Places",s.places,"Google Places"],["Emails",true,"Website reader"+(s.hunter?" + Hunter":"")],["Mail",s.mail,s.sender||"Not set"]]
+   .map(([n,on,t])=>`<span class="chip ${on?"on":""}" title="${t}"><b></b>${n}</span>`).join("");
+  $("#typetip").textContent=s.places?"":"No Google key found, so the free OpenStreetMap search is used and shop types are ignored.";
+});
+$("#sl").innerHTML=STATES.map(s=>`<option value="${s}">`).join("");
+$("#types").innerHTML=TYPES.map(t=>`<span class="t ${types.has(t)?"on":""}" tabindex="0" role="button">${t}</span>`).join("");
+$$(".t").forEach(el=>{const f=()=>{const t=el.textContent;types.has(t)?types.delete(t):types.add(t);el.classList.toggle("on")};el.onclick=f;el.onkeydown=e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();f()}}});
+$("#body").value=DEFAULT_BODY;
+
+// steps
+function renderSteps(){$("#steps").innerHTML=`<button class="st ${step===4?"on":""}" data-i="4">Dashboard</button>`+NAMES.map((n,i)=>`<button class="st ${i===step?"on":""} ${i<maxStep?"done":""}" data-i="${i}" ${i>maxStep?"disabled":""}>${n}</button>`).join("");
+  $$(".st").forEach(b=>b.onclick=()=>go(+b.dataset.i))}
+function go(i){step=i;if(i<4)maxStep=Math.max(maxStep,i);[0,1,2,3,4].forEach(k=>$("#s"+k).classList.toggle("hide",k!==i));$(".hero").classList.toggle("hide",i===4);renderSteps();if(i===4)loadDash();scrollTo({top:i===4?0:230,behavior:"smooth"})}
+async function loadDash(){
+  const d=await (await fetch("/api/stats")).json();
+  $("#dstats").innerHTML=[[d.searches,"searches run"],[d.leads,"shops found"],[d.emails,"emails found"],[d.sent,"emails sent"],[d.failed,"failed"]].map(([n,l])=>`<div class="stat"><b>${n}</b><span>${l}</span></div>`).join("");
+  const mx=Math.max(1,...d.daily);
+  $("#chart").innerHTML=d.daily.map((v,i)=>`<div class="col"><span>${v}</span><i style="height:${v/mx*78}%"></i><em>${new Date(Date.now()-(6-i)*864e5).toLocaleDateString("en-US",{weekday:"short"})}</em></div>`).join("");
+  $("#rs").innerHTML=d.recent_searches.length?d.recent_searches.map(s=>`<div class="lg" style="margin-bottom:8px"><span>${esc(s.city)}, ${esc(s.state)}</span><span style="color:var(--mute)">${s.count} shops, ${s.with_email} emails</span></div>`).join(""):'<p class="empty">No searches yet. Start one to find your first buyers.</p>';
+  $("#rl").innerHTML=d.recent.length?d.recent.map(r=>`<div class="lg"><span>${esc(r.business||r.to)} <small style="color:var(--mute)">${esc(r.to)}</small></span><span class="${r.ok?"ok":"bad"}">${r.ok?"Sent":"Failed"} <small style="color:var(--mute)">${new Date(r.t*1000).toLocaleString("en-US",{month:"short",day:"numeric",hour:"numeric",minute:"2-digit"})}</small></span></div>`).join(""):'<p class="empty">Nothing sent yet. Emails you send will be logged here.</p>';
+  $("#newc").onclick=()=>go(0);
+}
+go(4);
+
+// search
+$("#go").onclick=async()=>{
+  const city=$("#city").value.trim(),state=$("#state").value.trim().toUpperCase();$("#err").textContent="";
+  if(!city||state.length!==2){$("#err").textContent="Enter a city and a two-letter state, like Austin and TX.";return}
+  $("#go").disabled=true;$("#go").innerHTML='<span class="spin"></span>Searching';
+  try{
+    const r=await fetch("/api/search",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({city,state,types:[...types]})});
+    const d=await r.json();if(!r.ok)throw new Error(d.error);
+    leads=d.leads.map(l=>({...l,email:undefined}));source=d.source;sel.clear();
+    if(!leads.length){$("#err").textContent="No shops found. Try a larger city or another type.";return}
+    go(1);renderRows();lookup();
+  }catch(e){$("#err").textContent=e.message}
+  finally{$("#go").disabled=false;$("#go").textContent="Find shops"}
+};
+
+// email lookup, 4 at a time
+async function lookup(){
+  const q=leads.filter(l=>l.website||l.osm_email);leads.filter(l=>!l.website&&!l.osm_email).forEach(l=>l.email=null);
+  let i=0;
+  const worker=async()=>{while(i<q.length){const l=q[i++];
+    try{const r=await fetch("/api/email",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({website:l.website,osm_email:l.osm_email})});
+      const d=await r.json();l.email=d.email||null;l.src=d.source}catch{l.email=null}
+    renderRows()}};
+  renderRows();await Promise.all([1,2,3,4].map(worker));
+  fetch("/api/found",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({n:leads.filter(l=>l.email).length})});
+}
+
+function renderRows(){
+  const f=$("#q").value.toLowerCase();
+  const list=leads.filter(l=>l.name.toLowerCase().includes(f)&&(!onlyEm||l.email));
+  $("#rows").innerHTML=list.map(l=>`<tr class="r"><td><input type="checkbox" data-id="${l.id}" ${sel.has(l.id)?"checked":""} ${l.email?"":"disabled"} aria-label="Select ${l.name}"></td>
+   <td>${esc(l.name)}<small>${esc(l.type||"")}${l.rating?" - "+l.rating+" stars":""}</small></td><td><small style="color:var(--text)">${esc(l.address||"")}</small>${l.phone?`<small>${esc(l.phone)}</small>`:""}</td>
+   <td class="em ${l.email?"":"none"}">${l.email===undefined?'<span class="spin"></span>Looking':l.email?esc(l.email)+`<span class="src">${l.src||""}</span>`:"No public email"}</td></tr>`).join("");
+  $$("#rows input").forEach(c=>c.onchange=()=>{c.checked?sel.add(+c.dataset.id):sel.delete(+c.dataset.id);stats()});
+  stats();
+}
+function stats(){
+  const withE=leads.filter(l=>l.email).length,wait=leads.filter(l=>l.email===undefined).length;
+  $("#n1").textContent=leads.length;$("#n2").textContent=withE;$("#n3").textContent=sel.size;$("#n4").textContent=wait;
+  $("#tomsg").disabled=!sel.size;$("#tomsg").textContent=sel.size?`Write message (${sel.size})`:"Write message";
+  $("#selinfo").textContent=wait?`Checking ${wait} more websites for emails...`:`Shops found with ${source}.`;
+}
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+$("#q").oninput=renderRows;
+$("#onlyem").onclick=e=>{onlyEm=!onlyEm;e.target.textContent=onlyEm?"Show all shops":"Show only shops with email";renderRows()};
+$("#selall").onclick=()=>{leads.filter(l=>l.email).forEach(l=>sel.add(l.id));renderRows()};
+$("#tomsg").onclick=()=>{idx=0;go(2);preview()};
+
+// message
+const chosen=()=>leads.filter(l=>sel.has(l.id));
+const fill=(t,l)=>t.replaceAll("{{business}}",l.name).replaceAll("{{city}}",l.city);
+function preview(){
+  const c=chosen();if(!c.length)return;idx=(idx+c.length)%c.length;const l=c[idx];
+  $("#prev").innerHTML=`<div class="h">To: <b>${esc(l.email)}</b><br>Subject: <b>${esc(fill($("#subj").value,l))}</b></div><pre>${esc(fill($("#body").value,l))}</pre><div class="ft">${esc($("#fname").value||"Your name")}<br>You can reply "unsubscribe" at any time.</div>`;
+  $("#pc").textContent=`${l.name} (${idx+1} of ${c.length})`;
+}
+["#subj","#body","#fname"].forEach(s=>$(s).oninput=preview);
+$("#pp").onclick=()=>{idx--;preview()};$("#pn").onclick=()=>{idx++;preview()};
+$$(".tags button").forEach(b=>b.onclick=()=>{const t=$("#body");const p=t.selectionStart;t.setRangeText(b.dataset.t,p,t.selectionEnd,"end");t.focus();preview()});
+$("#tosend").onclick=()=>{
+  if(!api.mail){alert("Mail is not set up. Add SMTP_USER and SMTP_PASS to your .env file and restart.");return}
+  $("#dn").textContent=chosen().length;$("#df").textContent=api.sender;$("#dlg").showModal()};
+$("#dno").onclick=()=>$("#dlg").close();
+$("#dyes").onclick=()=>{$("#dlg").close();go(3);send()};
+
+// send
+async function send(){
+  const c=chosen();let ok=0,bad=0;$("#log").innerHTML="";
+  const upd=()=>{$("#sa").textContent=ok;$("#sb").textContent=bad;$("#sc").textContent=c.length-ok-bad;$("#pbar").style.width=(ok+bad)/c.length*100+"%"};upd();
+  for(const l of c){
+    let res;try{res=await (await fetch("/api/send",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({to:l.email,business:l.name,from_name:$("#fname").value,subject:fill($("#subj").value,l),body:fill($("#body").value,l)})})).json()}catch(e){res={ok:false,error:"Network error"}}
+    res.ok?ok++:bad++;
+    $("#log").insertAdjacentHTML("afterbegin",`<div class="lg"><span>${esc(l.name)} <small style="color:var(--mute)">${esc(l.email)}</small></span><span class="${res.ok?"ok":"bad"}">${res.ok?"Sent":"Failed: "+esc((res.error||"").slice(0,60))}</span></div>`);
+    upd();await new Promise(r=>setTimeout(r,1200));
+  }
+}
+
+// motion: parallax floaters + card tilt
+if(!matchMedia("(prefers-reduced-motion:reduce)").matches){
+  addEventListener("mousemove",e=>{const x=e.clientX/innerWidth-.5,y=e.clientY/innerHeight-.5;
+    $$(".fl").forEach(f=>{const d=+f.dataset.d;f.style.transform=`translate(${-x*d}px,${-y*d}px)`})});
+  $$("[data-tilt]").forEach(c=>{c.onmousemove=e=>{const r=c.getBoundingClientRect(),x=(e.clientX-r.left)/r.width-.5,y=(e.clientY-r.top)/r.height-.5;
+    c.style.transform=`perspective(900px) rotateY(${x*3}deg) rotateX(${-y*3}deg)`};c.onmouseleave=()=>c.style.transform=""});
+}
+</script>
+</body>
+</html>
