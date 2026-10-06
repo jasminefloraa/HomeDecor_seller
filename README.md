@@ -1,6 +1,6 @@
 <div align="center">
 
-# STOCKIST
+# DECORREACH
 
 ### Find the shops that will stock your home decor.
 
@@ -15,7 +15,7 @@
 <br>
 
 <a href="https://homedecor-seller-1.onrender.com/">
-  <img src="https://img.shields.io/badge/Live%20Demo-Visit%20Stockist-C9A227?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo">
+  <img src="https://img.shields.io/badge/Live%20Demo-Visit%20DecorReach-C9A227?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo">
 </a>
 <a href="https://github.com/jasminefloraa/HomeDecor_seller">
   <img src="https://img.shields.io/badge/GitHub-Repository-181717?style=for-the-badge&logo=github&logoColor=white" alt="GitHub">
@@ -27,7 +27,7 @@
 <img src="https://img.shields.io/badge/Flask-Backend-000000?style=flat-square&logo=flask&logoColor=white">
 <img src="https://img.shields.io/badge/JavaScript-Frontend-F7DF1E?style=flat-square&logo=javascript&logoColor=black">
 <img src="https://img.shields.io/badge/Google%20Places-API-4285F4?style=flat-square&logo=googlemaps&logoColor=white">
-<img src="https://img.shields.io/badge/SMTP-Email- EA4335?style=flat-square&logo=gmail&logoColor=white">
+<img src="https://img.shields.io/badge/SMTP-Email-EA4335?style=flat-square&logo=gmail&logoColor=white">
 <img src="https://img.shields.io/badge/Render-Deployed-46E3B7?style=flat-square&logo=render&logoColor=black">
 
 </div>
@@ -36,11 +36,11 @@
 
 ## Overview
 
-**Stockist** is a full-stack B2B prospecting application built for home-decor sellers who need to identify potential retail stores and interior-design businesses across the United States.
+**DecorReach** is a full-stack B2B prospecting application built for home-decor sellers who need to identify potential retail stores and interior-design businesses across the United States.
 
 The platform combines **live business discovery, public contact discovery, buyer review, personalized email outreach, and campaign tracking** into a single workflow.
 
-Instead of manually searching multiple websites and maintaining spreadsheets, sellers can use Stockist to build a targeted buyer list and start outreach from one interface.
+Instead of manually searching multiple websites and maintaining spreadsheets, sellers can use DecorReach to build a targeted buyer list and start outreach from one interface.
 
 ### The idea
 
@@ -50,7 +50,7 @@ Instead of manually searching multiple websites and maintaining spreadsheets, se
 
 ## Live Product
 
-### Try Stockist
+### Try DecorReach
 
 **Live Application**
 
@@ -75,7 +75,7 @@ https://github.com/jasminefloraa/HomeDecor_seller
 ┌──────────────────────┐
 │  Business Discovery  │
 │   Google Places API  │
-│   OpenStreetMap       │
+│   OpenStreetMap      │
 └──────────┬───────────┘
            │
            ▼
@@ -124,7 +124,7 @@ https://github.com/jasminefloraa/HomeDecor_seller
 
 ---
 
-# Why Stockist?
+# Why DecorReach?
 
 Traditional B2B prospecting can involve several disconnected tools:
 
@@ -142,10 +142,10 @@ Email Client
 Manual Tracking
 ```
 
-Stockist brings the core workflow together:
+DecorReach brings the core workflow together:
 
 ```text
-                 STOCKIST
+              DECORREACH
 
 Search → Discover → Enrich → Review → Personalize → Send → Track
 ```
@@ -293,7 +293,7 @@ Send directly through an authenticated SMTP mailbox and record:
 
 ```text
                          ┌─────────────────────┐
-                         │      STOCKIST       │
+                         │    DECORREACH       │
                          │    Web Interface    │
                          └──────────┬──────────┘
                                     │
@@ -334,7 +334,7 @@ Send directly through an authenticated SMTP mailbox and record:
 
 # API Endpoints
 
-Stockist exposes a lightweight Flask API.
+DecorReach exposes a lightweight Flask API.
 
 ### Check service configuration
 
@@ -566,7 +566,7 @@ http://127.0.0.1:5000
 
 ### Production
 
-Stockist can run with Gunicorn:
+DecorReach can run with Gunicorn:
 
 ```bash
 gunicorn app:app
@@ -576,7 +576,7 @@ gunicorn app:app
 
 # Deployment
 
-Stockist is deployed using **Render**.
+DecorReach is deployed using **Render**.
 
 ### Production URL
 
@@ -631,7 +631,7 @@ User Input
    Business Results
           │
           ▼
-      Stockist UI
+      DecorReach UI
 ```
 
 ### Email discovery
@@ -679,7 +679,7 @@ Email Delivery
 
 # Responsible Outreach
 
-Stockist is designed around **targeted B2B outreach**, not indiscriminate bulk messaging.
+DecorReach is designed around **targeted B2B outreach**, not indiscriminate bulk messaging.
 
 The application:
 
@@ -825,7 +825,7 @@ docs/
 Then display them in the README:
 
 ```markdown
-![Stockist Dashboard](docs/hero.png)
+![DecorReach Dashboard](docs/hero.png)
 
 ![Business Discovery](docs/search-results.png)
 
@@ -849,7 +849,7 @@ Home Decor Store
 Interior Designer
 ```
 
-### Stockist workflow
+### DecorReach workflow
 
 ```text
 Search Austin
@@ -871,9 +871,9 @@ Track delivery result
 
 ---
 
-# What Makes Stockist Different?
+# What Makes DecorReach Different?
 
-Stockist isn't simply a business search interface.
+DecorReach isn't simply a business search interface.
 
 It connects multiple stages of the B2B prospecting workflow:
 
@@ -943,7 +943,7 @@ Built with Python, Flask, JavaScript, APIs, and a focus on solving a real B2B wo
 
 <div align="center">
 
-### STOCKIST
+### DECORREACH
 
 **Discover businesses. Find buyers. Start conversations.**
 
