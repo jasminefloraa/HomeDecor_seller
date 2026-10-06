@@ -28,7 +28,7 @@ def _load():
         with open(DB) as f:
             return json.load(f)
     except Exception:
-        return {"searches": [], "sends": []}
+        return {"searches": [], "sends": [], "users": []}
 
 
 def log(kind, row):
