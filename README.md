@@ -14,7 +14,7 @@
 
 <br>
 
-<a href="https://homedecor-seller-1.onrender.com/">
+<a href="https://homedecor-seller.onrender.com/">
   <img src="https://img.shields.io/badge/Live%20Demo-Visit%20DecorReach-C9A227?style=for-the-badge&logo=googlechrome&logoColor=white" alt="Live Demo">
 </a>
 <a href="https://github.com/jasminefloraa/HomeDecor_seller">
