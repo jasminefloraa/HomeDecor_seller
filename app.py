@@ -113,10 +113,10 @@ def gmail_callback():
             callback_url += "?" + request.query_string.decode("ascii")
         complete_authorization(callback_url, expected)
         return redirect("/#gmail=connected")
-    except Exception as e:
-        message = str(e)
-        if "invalid_grant" in message.lower():
-            message = "Google authorization expired or was revoked. Please reconnect again."
+    except GmailAuthError as e:
+        return jsonify(ok=False, error=str(e)), 400
+    except Exception:
+        message = "Google authorization could not be completed. Start the OAuth flow again."
         return jsonify(ok=False, error=message), 400
 
 

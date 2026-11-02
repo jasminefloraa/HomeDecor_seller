@@ -14,7 +14,10 @@ from googleapiclient.errors import HttpError
 
 
 SCOPES = ["https://www.googleapis.com/auth/gmail.send"]
-TOKEN_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "gmail_token.json")
+TOKEN_FILE = os.getenv(
+    "GMAIL_TOKEN_FILE",
+    os.path.join(os.path.dirname(os.path.abspath(__file__)), "gmail_token.json"),
+).strip()
 CLIENT_SECRETS_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "credentials.json")
 _lock = threading.Lock()
 
@@ -127,7 +130,12 @@ def create_authorization_url(redirect_uri, state):
     config = _oauth_config()
     if not config.get("installed"):
         raise GmailAuthError("Gmail OAuth client credentials are not configured.")
-    flow = Flow.from_client_config(config, scopes=SCOPES, state=state)
+    flow = Flow.from_client_config(
+        config,
+        scopes=SCOPES,
+        state=state,
+        autogenerate_code_verifier=False,
+    )
     flow.redirect_uri = redirect_uri
     url, generated_state = flow.authorization_url(
         access_type="offline",
@@ -139,7 +147,12 @@ def create_authorization_url(redirect_uri, state):
 
 def complete_authorization(callback_url, state):
     config = _oauth_config()
-    flow = Flow.from_client_config(config, scopes=SCOPES, state=state)
+    flow = Flow.from_client_config(
+        config,
+        scopes=SCOPES,
+        state=state,
+        autogenerate_code_verifier=False,
+    )
     configured_redirect = os.getenv("GOOGLE_OAUTH_REDIRECT_URI", "").strip()
     app_url = os.getenv("APP_URL", "").strip().rstrip("/")
     flow.redirect_uri = configured_redirect.rstrip("/") or (
@@ -147,7 +160,12 @@ def complete_authorization(callback_url, state):
         if app_url
         else "https://homedecor-seller-1.onrender.com/api/gmail/callback"
     )
-    flow.fetch_token(authorization_response=callback_url)
+    try:
+        flow.fetch_token(authorization_response=callback_url)
+    except Exception as exc:
+        raise GmailAuthError(
+            "Google token exchange failed. Verify the OAuth callback URL and start authorization again."
+        ) from exc
     credentials = flow.credentials
     if not credentials.refresh_token:
         raise GmailAuthError("Google did not return a refresh token. Revoke prior access and reconnect again.")
