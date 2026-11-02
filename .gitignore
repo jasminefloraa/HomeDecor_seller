@@ -1,8 +1,13 @@
-﻿.env
+*.env
+!.env.example
 venv/
 .venv/
 __pycache__/
 *.pyc
-data.json
 credentials.json
 token.json
+credentials.json
+gmail_token.json
+gmail_token.json.tmp
+*.pyc
+__pycache__/
